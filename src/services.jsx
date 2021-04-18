@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 const http = axios.create({
-  baseURL: 'http://localhost:8080',
-  headers: {
-    'Content-type': 'application/json'
-  }
+  baseURL: 'http://localhost:8080/user'
 });
 
 class Services {
@@ -16,7 +13,7 @@ class Services {
   }
   //devuelve todos sus notes
   getAllNotes() {
-    return http.get('/allNotes')
+    return http.get("/allNotes")
   }
   //crea un nuevo note
   newNote(data) {
