@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Note from './Note';
 import services from '../services';
+import NavBar from './Navbar';
+import DropDownForm from './DropDownForm';
 
 const List = (props) => (
   <div className={props.className}>
+    <DropDownForm />
     {props.notes.map(note => 
       <Note 
         key={Math.random()}
@@ -20,18 +23,21 @@ const List = (props) => (
 );
 
 const ListContainer = styled(List)`
-  grid-column: 2 / 10;
-  display: grid;
-  grid-template-rows: repeat(auto-fill, minmax(200px, 1fr));
+  grid-area: content / 2 / end / 8;
+  position: relative;
+  ${'' /* display: grid;
+  grid-template-rows: repeat(auto-fill, minmax(200px, 1fr)); */}
 `;
 
 const UserNotesContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: [start] auto [content] auto [end];
 `;
 
 export default function UserNotes() {
   const [notes, setNotes] = useState([[]]);
+  const [newNote, setNewNote] = useState([]);
 
   function getUserNotes() {
     services.getAllNotes()
@@ -43,13 +49,13 @@ export default function UserNotes() {
    });
   }
 
-
   useEffect(() => {
     getUserNotes()
   }, []);
 
   return (
     <UserNotesContainer>
+      <NavBar />
       <ListContainer
         className={ListContainer}
         notes={notes}
