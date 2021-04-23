@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Theme from './Theme';
 import  Home from './components/Home';
 import UserNotes from './components/UserNotes';
+import NavBar from './components/Navbar';
+import Footer from './components/Footer';
 
 const StyledApp = styled.div`
   font-family: ${props => props.theme.fonts[0]};

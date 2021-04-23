@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Note from './Note';
 import services from '../services';
-import NavBar from './Navbar';
+import Footer from './Footer';
 import DropDownForm from './DropDownForm';
+import NavBar from './Navbar';
 
 const List = (props) => (
   <div className={props.className}>
@@ -12,32 +13,38 @@ const List = (props) => (
       <Note 
         key={Math.random()}
         note={note}
-        // id={note._id}
-        // title={note.title}
-        // sub={note.sub}
-        // category={note.category}
-        // content={note.content}
       />
     )}
   </div>
 );
 
 const ListContainer = styled(List)`
-  grid-area: content / 2 / end / 8;
-  position: relative;
-  ${'' /* display: grid;
-  grid-template-rows: repeat(auto-fill, minmax(200px, 1fr)); */}
 `;
 
 const UserNotesContainer = styled.div`
+  min-height: 100vh; 
+  margin: 0; 
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: [start] auto [content] auto [end];
+  grid-template-rows: auto 1fr auto;
+  ${'' /* @media (max-width: 1500px) {
+    ${ListContainer} {
+      grid-column: 2 / 7;
+    }
+  }
+  @media (max-width: 800px) {
+    ${ListContainer} {
+      grid-column: 2 / 10;
+    }
+  }
+  @media (max-width: 480px) {
+    ${ListContainer} {
+      grid-column: 2 / 12;
+    }
+  } */}
 `;
 
 export default function UserNotes() {
   const [notes, setNotes] = useState([[]]);
-  const [newNote, setNewNote] = useState([]);
 
   function getUserNotes() {
     services.getAllNotes()
@@ -60,6 +67,7 @@ export default function UserNotes() {
         className={ListContainer}
         notes={notes}
       />
+      <Footer />
     </UserNotesContainer>
   );
 }

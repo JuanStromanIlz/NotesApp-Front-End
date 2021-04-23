@@ -5,7 +5,7 @@ import services from '../services';
 
 const Note = forwardRef((props, ref) => (
   <Linkify>
-    <article className={props.className}>
+    <article ref={props.post} className={props.className}>
       <header>
         <div className='post-info'>
           <h3 className='post-title'>{props.title}</h3>
@@ -17,23 +17,13 @@ const Note = forwardRef((props, ref) => (
           <button className='actions-big' onClick={() => props.deleteNote()}>
             <span className='material-icons'>delete_forever</span>
           </button>
-          <div ref={ref} className='actions-small'> {/* This display when viewport is less than 480px */}
+          <div ref={props.dropMenu} className='actions-small'> {/* This display when viewport is less than 480px */}
             <button onClick={() => props.openMenu()} onMouseLeave={() => props.openMenu()}>
               <span className='material-icons'>more_vert</span>
             </button>
             <div className='actions-drop'>
-              <div>
-                <h4>Edit note</h4>
-                <button onClick={() => props.deleteNote()}>
-                  <span className='material-icons'>edit_note</span>
-                </button>
-              </div>
-              <div>
-                <h4>Delete</h4>
-                <button onClick={() => props.deleteNote()}>
-                  <span className='material-icons'>delete_forever</span>
-                </button>
-              </div>
+              <button onClick={() => props.deleteNote()}>Edit note</button>
+              <button onClick={() => props.deleteNote()}>Delete</button>
             </div>
           </div>
         </div>
@@ -50,9 +40,11 @@ const Note = forwardRef((props, ref) => (
 ));
 
 const StyledNote = styled(Note)` 
-  padding: .8rem .3rem;
-  border-top: 1px solid ${props => props.theme.colors.lavanda};
-  border-bottom: 1px solid ${props => props.theme.colors.lavanda};
+  padding: .8rem;
+  margin-bottom: .8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px rgba(0, 0, 0, 0.1) inset;
+  background: ${props => props.theme.colors.lavanda};
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: .3rem;
@@ -107,7 +99,8 @@ const StyledNote = styled(Note)`
     }
   }
   footer {
-    ${'' /* padding: .3rem 0; */}
+    padding-top: .3rem;
+    border-top: 1px solid ${props => props.theme.colors.lila};
   }
   .actions-big {
     display: block;
@@ -116,36 +109,43 @@ const StyledNote = styled(Note)`
     display: none;
     position: relative;
     .actions-drop {
+      white-space: nowrap;
       width: fit-content;
       display: flex;
       flex-direction: column;
-      gap: .3rem;
-      padding: .5rem .3rem;
-      background: white;
+      gap: .8rem;
+      padding: .8rem;
+      background: ${props => props.theme.colors.lavanda};
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px rgba(0, 0, 0, 0.1) inset;
+      border-radius: 10px;
       transform: scaleY(0);    
       transform-origin: top;
       transition: transform .1s ease;
       position: absolute;  
       top: 100%;
       right: 0;
-      div {
-        white-space: nowrap;
-        z-index: 1;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: .3rem;
-        h4 {
-          margin: 0;
+      > button {
+        text-align: left;
+        font-size: 1rem;
+        :hover {
+          filter: brightness(120%);
         }
       }
     }
+  }
+`;
+
+const NoteContainer = styled.div`
+/* Note Animations */
+  .delete {
+    display: none;
   }
   .open-menu {
     .actions-drop {
       transform: scaleY(1); 
     }
   }
+/* Note Animations */
   @media (max-width: 1500px) {
     .actions-big {
       display: block;
@@ -174,13 +174,15 @@ const StyledNote = styled(Note)`
 
 export default function NoteComponent(props) {
   const [dataNote, setData] = useState({});
-  const menuRef = useRef(null);
+  const dropMenu = useRef(null);
+  const postRef = useRef(null);
 
   function setNote(note) {
     setData(note)
   }
 
   function deleteNote() {
+    postRef.current.classList.add('delete');
     services.deleteNote(dataNote._id)
   }
 
@@ -189,7 +191,7 @@ export default function NoteComponent(props) {
   }
 
   function openMenu() {
-    menuRef.current.classList.toggle('open-menu');
+    dropMenu.current.classList.toggle('open-menu');
   }
 
   useEffect(() => {
@@ -197,18 +199,21 @@ export default function NoteComponent(props) {
   }, []);
 
   return (
-    <StyledNote 
-      ref={menuRef}
-      className={StyledNote}
-      updateNote={updateNote}
-      deleteNote={deleteNote}
-      openMenu={openMenu}
-      id={dataNote.id}
-      title={dataNote.title}
-      sub={dataNote.sub}
-      category={dataNote.category}
-      content={dataNote.content}
-      // createdAt={dataNote.createdAt}
-    />
+    <NoteContainer>
+      <StyledNote 
+        post={postRef}
+        dropMenu={dropMenu}
+        className={StyledNote}
+        updateNote={updateNote}
+        deleteNote={deleteNote}
+        openMenu={openMenu}
+        id={dataNote.id}
+        title={dataNote.title}
+        sub={dataNote.sub}
+        category={dataNote.category}
+        content={dataNote.content}
+        // createdAt={dataNote.createdAt}
+      />
+    </NoteContainer>
   );
 }

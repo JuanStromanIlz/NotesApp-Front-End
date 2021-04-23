@@ -18,8 +18,6 @@ const StyledMenu = styled(FormMenu)`
   flex-direction: row;
   justify-content: space-between;
   padding: .8rem 0;
-  border-bottom: 1px solid ${props => props.theme.colors.lavanda};
-  margin-bottom: .8rem;
   h2 {
     margin: auto auto auto 0;
   }
@@ -44,7 +42,7 @@ const DropForm = forwardRef((props, ref) => (
       onChange={(e) => props.handleChange(e)}
     />
     <textarea 
-      rows="5"
+      rows='5'
       name='content' 
       placeholder='Content'
       autoComplete='off'
@@ -66,13 +64,11 @@ const DropForm = forwardRef((props, ref) => (
 const StyledForm = styled(DropForm)`
   display: flex;
   flex-direction: column;
-  margin-bottom: .8rem;
+  margin: 0;
   gap: .8rem;
   width: 100%;
-  transform: scaleY(0);    
-  transform-origin: top;
-  transition: transform .4s ease;
-  position: absolute;
+  max-height: 0;
+  visibility: hidden;
   input {
     margin: 0;
   }
@@ -83,7 +79,7 @@ const StyledForm = styled(DropForm)`
 
 const FormContainer = styled.div`
   max-height: fit-container;
-  padding: .8rem .3rem;
+  padding: .8rem .3rem 0 .3rem;
   button {
     border: none;
     border-radius: ${props => props.theme.button.borderRadius};
@@ -104,8 +100,12 @@ const FormContainer = styled.div`
     }
   }
   .open-form {
-    transform: scaleY(1);
-    position: relative;
+    border-top: 1px solid ${props => props.theme.colors.lavanda};
+    max-height: 225px;
+    margin-bottom: .8rem;
+    padding-top: .8rem;
+    transition: max-height 0.25s ease-in;
+    visibility: visible;
   }
 `;
 
