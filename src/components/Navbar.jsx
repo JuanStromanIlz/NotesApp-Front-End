@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import services from '../services';
 
 const arrayCat = ['Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias'];
 
@@ -37,6 +38,8 @@ const StyledSliceMenu = styled(SliceMenu)`
   display: flex; 
   flex-direction: column;
   overflow: scroll;
+  overflow-x: hidden;
+  white-space: nowrap;
   > * {
     margin-left: .8rem;
   }
@@ -67,9 +70,8 @@ const Nav = (props) => {
           menu
         </span>
       </button>
-      <h1>Cascading Thoughts</h1>
+      <h1 id='app-title'>Cascading Thoughts</h1>
       <button id='exit'>
-        Exit
         <span className='material-icons' onClick={() => props.openMenu()}>
           logout
         </span>
@@ -79,18 +81,25 @@ const Nav = (props) => {
 }
 
 const StyledNav = styled(Nav)`
-background: white;
+  background: white;
   position: relative;
   top: 0;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   gap: 1.3em;
-  h1 {
+  #app-title {
     margin: 0;
   }
   #drop-menu {
     display: none;
+  }
+  #exit {
+    display: block;
+    position: absolute;
+    top: .8rem;
+    right: .8rem;
+    bottom: .8rem;
   }
 `;
 
@@ -137,11 +146,18 @@ const NavBarContainer = styled.div`
     } 
   }
   @media (max-width: 480px) {
-    #drop-menu {
-      display: block;
-    }  
-    #exit {
-      display: none;
+    ${StyledNav} {
+      justify-content: center;
+      #drop-menu {
+        display: block;
+        position: absolute;
+        top: .8rem;
+        left: .8rem;
+        bottom: .8rem;
+      }  
+      #exit {
+        display: none;
+      }
     }
   }
 `;
@@ -151,7 +167,7 @@ export default function NavBar() {
     document.getElementById('userNotes').classList.toggle('view-fix');
     document.getElementById('sliceMenu').classList.toggle('slice');
   }
-
+  
   return (
     <NavBarContainer>
       <StyledNav 

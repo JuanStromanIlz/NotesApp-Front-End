@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { format, parseISO } from 'date-fns';
 import Linkify from 'react-linkify';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import services from '../services';
@@ -34,6 +35,7 @@ const Note = forwardRef((props, ref) => (
       </div>  
       <footer className='category'>
         <span>{props.category}</span>
+        <span>Created at {props.updatedAt}</span>
       </footer>
     </article>
   </Linkify>
@@ -101,6 +103,11 @@ const StyledNote = styled(Note)`
   footer {
     padding-top: .3rem;
     border-top: 1px solid ${props => props.theme.colors.lila};
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: .3rem;
+    flex-wrap: wrap;
   }
   .actions-big {
     display: block;
@@ -176,6 +183,7 @@ export default function NoteComponent(props) {
   const [dataNote, setData] = useState({});
   const dropMenu = useRef(null);
   const postRef = useRef(null);
+  const dateToShow = format(parseISO(dataNote.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy");
 
   function setNote(note) {
     setData(note)
@@ -212,7 +220,7 @@ export default function NoteComponent(props) {
         sub={dataNote.sub}
         category={dataNote.category}
         content={dataNote.content}
-        // createdAt={dataNote.createdAt}
+        updatedAt={dateToShow}
       />
     </NoteContainer>
   );
