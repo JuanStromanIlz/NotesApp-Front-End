@@ -29,6 +29,11 @@ const StyledApp = styled.div`
     /* Support for IE. */
     font-feature-settings: 'liga';
   }
+  .view-fix {
+    position: fixed;
+    overflow: hidden;
+    height:100vh;
+  }
 `;
 
 function App() {

@@ -19,10 +19,11 @@ const List = (props) => (
 );
 
 const ListContainer = styled(List)`
+  padding: 0 .8rem;
 `;
 
 const UserNotesContainer = styled.div`
-  min-height: 100vh; 
+  min-height: 100vh;
   margin: 0; 
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -61,7 +62,7 @@ export default function UserNotes() {
   }, []);
 
   return (
-    <UserNotesContainer>
+    <UserNotesContainer id='userNotes'>
       <NavBar />
       <ListContainer
         className={ListContainer}
