@@ -16,9 +16,13 @@ class Services {
   getAllNotes() {
     return http.get("/allNotes")
   }
-  //crea las categorias de los usuarios
+  //trae las categorias del usuario
   getCategories() {
     return http.get("/allCategories")
+  }
+  //filtra las notas por categorias 
+  getFilteredCategories(values) {
+    return http.get('/filterCategories')
   }
   //crea un nuevo note
   newNote(data) {

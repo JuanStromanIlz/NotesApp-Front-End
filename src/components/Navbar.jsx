@@ -1,13 +1,27 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import services from '../services';
 
-const arrayCat = ['Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias', 'Test', 'Juegos', 'Notas', 'Cosas', 'Categorias'];
-
 const SliceMenu = (props) => {
+  const [categories, setCategories] = useState([]);
+
+  function userCategories() {
+    services.getCategories()
+    .then(res => {
+      setCategories(res.data)
+    })
+    .catch(err => {
+      console.log(err)
+    });
+  }
   function openCat() {
     document.getElementById('slicedCat').classList.toggle('open-cat');
     document.getElementById('icon-rotate').classList.toggle('rotate');
   }
+
+  useEffect(() => {
+    userCategories()
+  }, []);
 
   return (
     <div  id={props.id} className={props.className}>
@@ -17,9 +31,21 @@ const SliceMenu = (props) => {
           <span id='icon-rotate' className='material-icons'>west</span>
         </button>
         <div id='slicedCat' className='cate-list'>
-          {arrayCat.map(cat => 
-            <button>{cat}</button>
-          )}
+          <form>
+            {categories.map(value => 
+              <div
+                key={value}
+                className='category-input'
+              >
+                <span>{value}</span>
+                <input
+                  onChange={() => console.log(value)} 
+                  type="checkbox" 
+                  name={value}
+                />
+              </div>
+            )}
+          </form>
         </div>
       </div>
       <h4>Logout</h4>
