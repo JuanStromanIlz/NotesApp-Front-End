@@ -5,10 +5,11 @@ import services from '../services';
 import Footer from './Footer';
 import DropDownForm from './DropDownForm';
 import NavBar from './Navbar';
+import Filter from './Filter';
+import ViewContainer from './ViewContainer';
 
 const List = (props) => (
   <div className={props.className}>
-    <DropDownForm />
     {props.notes.map(note => 
       <Note 
         key={Math.random()}
@@ -22,26 +23,39 @@ const ListContainer = styled(List)`
   padding: 0 .8rem;
 `;
 
+const NoteActions = (props) => {
+  return (
+    <div className={props.className}>
+      <DropDownForm />
+      <Filter 
+        setNotes={props.setNotes}
+      />
+    </div>
+  );
+}
+
+const StyledActions = styled(NoteActions)`
+  grid-column: 1 / 7;
+`;
+
 const UserNotesContainer = styled.div`
-  min-height: 100vh;
-  margin: 0; 
   display: grid;
-  grid-template-rows: auto 1fr auto;
-  ${'' /* @media (max-width: 1500px) {
+  grid-template-columns: repeat(12, 1fr);
+  @media (max-width: 1500px) {
     ${ListContainer} {
-      grid-column: 2 / 7;
+      grid-column: 7 / 13;
     }
   }
   @media (max-width: 800px) {
     ${ListContainer} {
-      grid-column: 2 / 10;
+      grid-column: 1 / 10;
     }
   }
   @media (max-width: 480px) {
     ${ListContainer} {
-      grid-column: 2 / 12;
+      grid-column: 1 / 12;
     }
-  } */}
+  }
 `;
 
 export default function UserNotes() {
@@ -62,13 +76,21 @@ export default function UserNotes() {
   }, []);
 
   return (
-    <UserNotesContainer id='userNotes'>
-      <NavBar />
-      <ListContainer
-        className={ListContainer}
-        notes={notes}
+    <ViewContainer id='userNotes'>
+      <NavBar 
+        setNotes={setNotes}
       />
+      <UserNotesContainer>
+        <StyledActions 
+          className={StyledActions}
+          setNotes={setNotes}
+        />
+        <ListContainer
+          className={ListContainer}
+          notes={notes}
+        />
+      </UserNotesContainer>
       <Footer />
-    </UserNotesContainer>
+    </ViewContainer>
   );
 }

@@ -1,54 +1,14 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import services from '../services';
+import Filter from './Filter';
 
 const SliceMenu = (props) => {
-  const [categories, setCategories] = useState([]);
-
-  function userCategories() {
-    services.getCategories()
-    .then(res => {
-      setCategories(res.data)
-    })
-    .catch(err => {
-      console.log(err)
-    });
-  }
-  function openCat() {
-    document.getElementById('slicedCat').classList.toggle('open-cat');
-    document.getElementById('icon-rotate').classList.toggle('rotate');
-  }
-
-  useEffect(() => {
-    userCategories()
-  }, []);
 
   return (
     <div  id={props.id} className={props.className}>
-      <div>
-        <button className='cat-title' onClick={() => openCat()}>
-          <span>Categories &nbsp;</span>
-          <span id='icon-rotate' className='material-icons'>west</span>
-        </button>
-        <div id='slicedCat' className='cate-list'>
-          <form>
-            {categories.map(value => 
-              <div
-                key={value}
-                className='category-input'
-              >
-                <span>{value}</span>
-                <input
-                  onChange={() => console.log(value)} 
-                  type="checkbox" 
-                  name={value}
-                />
-              </div>
-            )}
-          </form>
-        </div>
-      </div>
-      <h4>Logout</h4>
+      <Filter 
+        setNotes={props.setNotes}
+      />
+      <span className='title'>Logout</span>
     </div>
   );
 };
@@ -58,7 +18,7 @@ const StyledSliceMenu = styled(SliceMenu)`
   position: absolute;
   top: 100%;
   width: 0vw;
-  height: 90vh;
+  height: 100vh;
   transform-origin: left;
   transition: width .5s ease;
   display: flex; 
@@ -68,20 +28,6 @@ const StyledSliceMenu = styled(SliceMenu)`
   white-space: nowrap;
   > * {
     margin-left: .8rem;
-  }
-  .cate-list {
-    height: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  .open-cat {
-    height: auto;
-  }
-  .rotate {
-    transform: rotate(-90deg);
   }
 `;
 
@@ -98,7 +44,7 @@ const Nav = (props) => {
       </button>
       <h1 id='app-title'>Cascading Thoughts</h1>
       <button id='exit'>
-        <span className='material-icons' onClick={() => props.openMenu()}>
+        <span className='material-icons title' onClick={() => props.openMenu()}>
           logout
         </span>
       </button>
@@ -138,11 +84,16 @@ const NavBarContainer = styled.div`
   }
   display: grid;
   grid-template-rows: auto 1fr;
+  .title {
+    font-size: 1.2rem;
+  }
+  .sub {
+    font-size: 1rem;
+  }
   button {
     background: transparent;
     border: none;
     text-align: left;
-    font-size: 1rem;
     padding: 0;
     gap: .8rem;
     :hover {
@@ -164,7 +115,7 @@ const NavBarContainer = styled.div`
   @media (max-width: 1500px) {
     #drop-menu {
       display: none;
-    }  
+    } 
   }
   @media (max-width: 800px) {
     #drop-menu {
@@ -188,7 +139,7 @@ const NavBarContainer = styled.div`
   }
 `;
 
-export default function NavBar() {
+export default function NavBar(props) {
   function openMenu() {
     document.getElementById('userNotes').classList.toggle('view-fix');
     document.getElementById('sliceMenu').classList.toggle('slice');
@@ -203,6 +154,7 @@ export default function NavBar() {
       <StyledSliceMenu 
         id='sliceMenu'
         className={StyledSliceMenu}
+        setNotes={props.setNotes}
       />
     </NavBarContainer>
   );

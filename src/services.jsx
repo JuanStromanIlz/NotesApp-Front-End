@@ -22,7 +22,7 @@ class Services {
   }
   //filtra las notas por categorias 
   getFilteredCategories(values) {
-    return http.get('/filterCategories')
+    return http.get(`/filterCategories/${values}`)
   }
   //crea un nuevo note
   newNote(data) {
@@ -30,11 +30,11 @@ class Services {
   }
   //trae el note a editar
   getNote(id) {
-    return http.get(`/note/:${id}`)
+    return http.get(`/note/${id}`)
   }
   //busqueda por params
   getBySearch(search) {
-    return http.get(`/noteSearch/:${search}`)
+    return http.get(`/noteSearch/${search}`)
   }
   //edita el note seleccionado
   updateNote(data) {
