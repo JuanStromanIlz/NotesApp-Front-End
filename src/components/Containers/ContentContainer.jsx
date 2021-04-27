@@ -1,24 +1,24 @@
 import styled from 'styled-components';
 
 const Container = (props) => (
-  <div id={props.id} className={props.className}>
+  <div className={props.className}>
     {props.children}
   </div>
 );
 
 const StyledContainer = styled(Container)`
-  min-height: 100vh;
-  margin: 0; 
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-columns: repeat(9, 1fr);
+  > * {
+    padding: 0 .8rem;
+  }
 `;
 
-export default function ViewContainer(props) {
+export default function ContentContainer(props) {
   return (
-    <StyledContainer 
-      id={props.id}
-    >
+    <StyledContainer>
       {props.children}
     </StyledContainer>
   );
 }
+

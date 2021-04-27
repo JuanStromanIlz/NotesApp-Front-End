@@ -1,6 +1,6 @@
 import { useState, useRef, forwardRef } from 'react';
 import styled from 'styled-components';
-import services from '../services';
+import services from '../../services';
 
 const FormMenu = (props) => (
   <div className={props.className}>
@@ -24,7 +24,7 @@ const StyledMenu = styled(FormMenu)`
 `;
 
 const DropForm = forwardRef((props, ref) => (
-  <form className={props.className} ref={ref} onSubmit={props.sendNote}>
+  <form className={props.className} ref={ref} onSubmit={(e) => props.sendNote(e)}>
     <input 
       type='text' 
       name='title' 
@@ -156,10 +156,19 @@ export default function DropDownForm() {
     });
   }
 
-  function sendNote() {
+  function sendNote(e) {
+    // e.preventDefault();
     services.newNote(newNote)
     .then(res => {
-      console.log(res)
+      setNewNote(prevValues => {
+        return {
+          title: "",
+          sub: "",
+          content: "",
+          category: ""
+        }
+      });
+      dropMenu()
     })
   }
 

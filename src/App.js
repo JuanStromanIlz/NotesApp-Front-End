@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Theme from './Theme';
 import  Home from './components/Home';
 import UserNotes from './components/UserNotes';
-import NavBar from './components/Navbar';
-import Footer from './components/Footer';
+import EditNote from './components/EditNote';
 
 const StyledApp = styled.div`
   font-family: ${props => props.theme.fonts[0]};
@@ -44,6 +43,7 @@ function App() {
           <Switch>
             <Route exact path='/' component={Home}/>
             <Route path='/my-notes' component={UserNotes}/>
+            <Route path='/edit/:id' component={EditNote}/>
           </Switch>
         </StyledApp>
       </Router>

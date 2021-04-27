@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { format, parseISO } from 'date-fns';
 import Linkify from 'react-linkify';
 import { forwardRef, useEffect, useRef, useState } from 'react';
-import services from '../services';
+import { Link } from 'react-router-dom';
+import services from '../../services';
 
 const Note = forwardRef((props, ref) => (
   <Linkify>
@@ -12,9 +13,11 @@ const Note = forwardRef((props, ref) => (
           <h3 className='post-title'>{props.title}</h3>
         </div>
         <div className='post-actions'>
-          <button className='actions-big' onClick={() => props.deleteNote()}>
-            <span className='material-icons'>edit_note</span>
-          </button>
+          <Link to={`/edit/${props.id}`}>  
+            <button className='actions-big'>
+              <span className='material-icons'>edit_note</span>
+            </button>
+          </Link>
           <button className='actions-big' onClick={() => props.deleteNote()}>
             <span className='material-icons'>delete_forever</span>
           </button>
@@ -23,7 +26,9 @@ const Note = forwardRef((props, ref) => (
               <span className='material-icons'>more_vert</span>
             </button>
             <div className='actions-drop'>
-              <button onClick={() => props.deleteNote()}>Edit note</button>
+              <Link to={`/edit/${props.id}`}>  
+                <button className='actions-big'>Edit note</button>
+              </Link>
               <button onClick={() => props.deleteNote()}>Delete</button>
             </div>
           </div>
@@ -194,10 +199,6 @@ export default function NoteComponent(props) {
     services.deleteNote(dataNote._id)
   }
 
-  function updateNote() {
-    console.log(dataNote._id)
-  }
-
   function openMenu() {
     dropMenu.current.classList.toggle('open-menu');
   }
@@ -212,10 +213,9 @@ export default function NoteComponent(props) {
         post={postRef}
         dropMenu={dropMenu}
         className={StyledNote}
-        updateNote={updateNote}
         deleteNote={deleteNote}
         openMenu={openMenu}
-        id={dataNote.id}
+        id={dataNote._id}
         title={dataNote.title}
         sub={dataNote.sub}
         category={dataNote.category}

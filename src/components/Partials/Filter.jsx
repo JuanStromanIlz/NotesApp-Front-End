@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import services from '../services';
+import services from '../../services';
 
 const Categories = (props) => {
   const [categories, setCategories] = useState([]);
@@ -112,32 +112,58 @@ const SearchBy = (props) => {
   }
 
   return (
-    <div className={props.className}>
-      <form onSubmit={makeSearch}>
-        <input 
-          className='sub'
-          autoComplete='off'
-          type='text'
-          name='input'
-          value={input}
-          onChange={handleChange}
-        />
-        <button type='submit' className={`${input.length < 1 && 'disable' }`}>
-          <span className='material-icons'>search</span>
-        </button>
-      </form>
-    </div>
+    <form className={props.className} onSubmit={makeSearch}>
+      <input 
+        className='sub'
+        autoComplete='off'
+        type='text'
+        name='input'
+        value={input}
+        onChange={handleChange}
+      />
+      <button type='submit' className={`${input.length < 1 && 'disable' }`}>
+        <span className='material-icons'>search</span>
+      </button>
+    </form>
   );
 }
 
 const StyledSearch = styled(SearchBy)`
-  form {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  width: 100%;
+  input {
+    margin: 0;
+    width: 80%;
+  }
+  button {
+    width: 20%;
   }
 `;
 
 const FilterContainer = styled.div`
+  > * {
+    width: 100%;
+  }
+  button {
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 0;
+    gap: .8rem;
+    :hover {
+      filter: brightness(120%);
+    }
+    :focus {
+      outline: none;
+    }
+    .material-icons  {
+      color: ${props => props.theme.colors.lila};
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
   > * {
     margin-bottom: .8rem;
   }

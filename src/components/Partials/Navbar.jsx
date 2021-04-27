@@ -118,9 +118,19 @@ const NavBarContainer = styled.div`
     } 
   }
   @media (max-width: 800px) {
-    #drop-menu {
-      display: none;
-    } 
+    ${StyledNav} {
+      justify-content: center;
+      #drop-menu {
+        display: block;
+        position: absolute;
+        top: .8rem;
+        left: .8rem;
+        bottom: .8rem;
+      }  
+      #exit {
+        display: none;
+      }
+    }
   }
   @media (max-width: 480px) {
     ${StyledNav} {

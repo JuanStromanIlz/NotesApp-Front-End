@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import services from '../services';
-import Footer from './Footer';
+import Footer from './Partials/Footer';
 
 const Home = (props) => (
   <div className={props.className}>
