@@ -6,7 +6,8 @@ import ContentContainer from './Containers/ContentContainer';
 import Note from './Partials/Note';
 import Footer from './Partials/Footer';
 import DropDownForm from './Partials/DropDownForm';
-import Navbar from './Partials/Navbar';
+import { ProfileCard } from './Partials/ProfileCard';
+import { CompleteNav } from './Partials/Navbar';
 import Filter from './Partials/Filter';
 
 const NoMatch = (props) => {
@@ -80,66 +81,29 @@ const StyledNoMatch = styled(NoMatch)`
   }
 `;
 
-const List = (props) => (
-  <div className={props.className}>
-    <DropDownForm />
-    {props.notes.length < 1 && 
-      <StyledNoMatch 
-      className={StyledNoMatch}
-      setNotes={props.setNotes}
-    />
-    }
-    {props.notes.map(note => 
-      <Note 
-        key={Math.random()}
-        note={note}
-      />
-    )}
-  </div>
-);
-
-const ListContainer = styled(List)`
-  grid-column: 3 / 7;
-  border-left: 3px solid ${props => props.theme.colors.lila};
-  border-right: 3px solid ${props => props.theme.colors.lila};
-`;
-
-const NoteActions = (props) => {
-  return (
-    <div className={props.className}>
-      <Filter 
-        setNotes={props.setNotes}
-      />
-    </div>
-  );
-}
-
-const StyledActions = styled(NoteActions)`
-  height: fit-content;
-  position: sticky;
-  top: 57px;
-  grid-column: 1 / 3;
-`;
-
-const UserNotesContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  @media (max-width: 800px) {
-    ${ListContainer} {
-      grid-column: 1 / 10;
-    }
-    ${StyledActions} {
-      display: none;
+const ListContainer = styled.div`
+  grid-column: 1 / 13;
+  > * {
+    margin-bottom: .8rem;
+    :last-child {
+      margin-bottom: 0;
     }
   }
-  @media (max-width: 480px) {
-    ${ListContainer} {
-      grid-column: 1 / 10;
-      border: none;
-    }
-    ${StyledActions} {
-      display: none;
-    }
+  @media (min-width: 50rem) and (min-height: 32rem) {
+    grid-column: 4 / 10;
+  }
+`;
+
+const Actions = styled.div`
+  display: none;
+  @media (min-width: 50rem) and (min-height: 32rem) {
+    display: block;
+    grid-column: 1 / 4;
+    height: fit-content;
+    padding: .8rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px rgba(0, 0, 0, 0.1) inset;
+    background: ${props => props.theme.colors.white};
+    border-radius: 10px;
   }
 `;
 
@@ -162,19 +126,27 @@ export default function UserNotes() {
 
   return (
     <ViewContainer id='userNotes'>
-      <Navbar 
-        setNotes={setNotes}
-      />
+      <CompleteNav notesLenght={notes.length} setNotes={setNotes} />
       <ContentContainer>
-        <StyledActions 
-          className={StyledActions}
-          setNotes={setNotes}
-        />
-        <ListContainer
-          setNotes={setNotes}
-          className={ListContainer}
-          notes={notes}
-        />
+        <Actions>
+          <ProfileCard />
+          <Filter setNotes={setNotes} />
+        </Actions>
+        <ListContainer>
+          <DropDownForm />
+          {notes.length < 1 && 
+            <StyledNoMatch 
+            className={StyledNoMatch}
+            setNotes={setNotes}
+          />
+          }
+          {notes.map(note => 
+            <Note 
+              key={Math.random()}
+              note={note}
+            />
+          )}
+        </ListContainer>
       </ContentContainer>
       <Footer />
     </ViewContainer>

@@ -3,24 +3,14 @@ import { ThemeProvider } from 'styled-components';
 
 const theme = {
   colors: {
-    black: '#090a0bff',
-    grape: '#a288a6ff',
-    lila: '#bb9bb0ff',
-    alPink: '#ccbcbcff',
-    lavanda: '#f1e3e4ff'
+    black: '#0A0C0B',
+    white: '#F2F1F9',
+    grey: '#D9DFDC',
+    main: '#544BAD',
+    light: '#958DCE',
+    dark: '#2D3B6E'
   },
-  fonts: ['Source Sans Pro'],
-  input: {
-    background: '#f1e3e4ff',
-    focusBorder: '#bb9bb0ff',
-    border: '1px solid #f1e3e4ff'
-  },
-  button: {
-    background: '#ccbcbcff',
-    focusBackground: '#a288a6ff',
-    borderRadius: '50px',
-    padding: '.5em'
-  }
+  fonts: ['Source Sans Pro']
 }
 
 const Theme = ({ children }) => (

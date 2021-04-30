@@ -1,6 +1,33 @@
 import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
+import { Form } from './Form';
+import { Button } from './Button';
 import services from '../../services';
+
+const StyledSearch = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  gap: .8rem;
+  header {
+    display: flex;
+    flex-flow: row nowrap;
+  }
+  .cate-input {
+    display: flex;
+    flex-row: row wrap;
+    gap: .5rem;
+    h3, input {
+      margin: auto 0;
+    }
+  }
+  h3 {
+    margin: 0;
+  }
+  ${Form} { 
+    display: flex;
+    flex-flow: row wrap;
+  }
+`;
 
 const Categories = (props) => {
   const [categories, setCategories] = useState([]);
@@ -60,30 +87,32 @@ const Categories = (props) => {
   }, []);
 
   return (
-    <div className={props.className}>
-      <span className='title'>Categories &nbsp;</span>
-      <button className='cat-title title' onClick={() => openCat()}>
-        <span ref={categoryIcon} className='material-icons'>west</span>
-      </button>
-      <div  ref={categoryList} className='cate-list'>  
-        <form onInput={sendFilter}>
+    <StyledSearch>
+      <header id='cat-header'>
+        <h3>Categorias &nbsp;</h3>
+        <Button className='cat-title' onClick={() => openCat()}>
+          <span ref={categoryIcon} className='material-icons'>west</span>
+        </Button>
+      </header>
+      <div ref={categoryList} className='cate-list' >
+        <Form onInput={sendFilter}>
           {categories.map(value => 
-            <div
-              key={value}
-              className='category-input'
-            >
-              <span className='sub'>{value}</span>
-              <input
-                type="checkbox"
-                name={value}
-                checked={isChecked[value] || false}
-                onChange={handleChange}
-              />
-            </div>
+              <div
+                key={value}
+                className='cate-input'
+              >
+                <h3 className='sub'>{value}</h3>
+                <input
+                  type="checkbox"
+                  name={value}
+                  checked={isChecked[value] || false}
+                  onChange={handleChange}
+                />
+              </div>
           )}
-        </form> 
+        </Form> 
       </div>
-    </div>
+    </StyledSearch>
   );
 }
 
@@ -91,7 +120,7 @@ const SearchBy = (props) => {
   const [input, setInput] = useState("");
 
   function handleChange(e) {
-    let {value, name} = e.target;
+    let { value } = e.target;
     setInput(value)
   }
 
@@ -112,71 +141,41 @@ const SearchBy = (props) => {
   }
 
   return (
-    <form className={props.className} onSubmit={makeSearch}>
-      <input 
-        className='sub'
-        autoComplete='off'
-        type='text'
-        name='input'
-        value={input}
-        onChange={handleChange}
-      />
-      <button type='submit' className={`${input.length < 1 && 'disable' }`}>
-        <span className='material-icons'>search</span>
-      </button>
-    </form>
+    <StyledSearch>
+      <h3>Buscar</h3>
+      <Form onSubmit={makeSearch}>
+        <input 
+          className='sub'
+          autoComplete='off'
+          type='text'
+          name='input'
+          value={input}
+          onChange={handleChange}
+        />
+        <Button type='submit' className={`${input.length < 1 && 'disable' }`}>
+          <span className='material-icons'>search</span>
+        </Button>
+      </Form>
+    </StyledSearch>
   );
 }
 
-const StyledSearch = styled(SearchBy)`
-  display: flex;
-  flex-direction: row;
-  margin: 0;
-  width: 100%;
-  input {
-    margin: 0;
-    width: 80%;
-  }
-  button {
-    width: 20%;
-  }
-`;
-
 const FilterContainer = styled.div`
-  > * {
-    width: 100%;
-  }
-  button {
-    background: transparent;
-    border: none;
-    text-align: left;
-    padding: 0;
-    gap: .8rem;
-    :hover {
-      filter: brightness(120%);
-    }
-    :focus {
-      outline: none;
-    }
-    .material-icons  {
-      color: ${props => props.theme.colors.lila};
-      display: inline-block;
-      vertical-align: middle;
-    }
-  }
-  > * {
-    margin-bottom: .8rem;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
   .cate-list {
-    height: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    display: none;
   }
   .open-cat {
-    height: auto;
+    display: block;
+    ${Form} {
+      display: flex;
+      overflow: hidden;
+      white-space: nowrap;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
   }
   .rotate {
     transform: rotate(-90deg);
@@ -191,8 +190,7 @@ export default function Filter(props) {
 
   return (
     <FilterContainer>
-      <StyledSearch
-        className={StyledSearch}
+      <SearchBy
         setNotes={props.setNotes}
       />
       <Categories 

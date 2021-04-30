@@ -1,15 +1,17 @@
 import { useState, useRef, forwardRef } from 'react';
+import { Form } from './Form';
+import { Button } from './Button';
 import styled from 'styled-components';
 import services from '../../services';
 
 const FormMenu = (props) => (
   <div className={props.className}>
-    <h2>New Note</h2>
-    <button onClick={props.dropMenu}>
+    <h3>New Note</h3>
+    <Button onClick={props.dropMenu}>
       <span className='material-icons'>
         {props.openMenu ? 'clear' : 'add'}
       </span>
-    </button>
+    </Button>
   </div>
 );
 
@@ -17,93 +19,27 @@ const StyledMenu = styled(FormMenu)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: .8rem 0;
-  h2 {
+  h3 {
     margin: auto auto auto 0;
   }
 `;
 
-const DropForm = forwardRef((props, ref) => (
-  <form className={props.className} ref={ref} onSubmit={(e) => props.sendNote(e)}>
-    <input 
-      type='text' 
-      name='title' 
-      placeholder='Title'
-      autoComplete='off'
-      value={props.newNote.title}
-      onChange={(e) => props.handleChange(e)}
-    />
-    <input 
-      type='text' 
-      name='sub' 
-      placeholder='Subtitle'
-      autoComplete='off'
-      value={props.newNote.sub}
-      onChange={(e) => props.handleChange(e)}
-    />
-    <textarea 
-      rows='5'
-      name='content' 
-      placeholder='Content'
-      autoComplete='off'
-      value={props.newNote.content}
-      onChange={(e) => props.handleChange(e)}
-    />
-    <input 
-      type='text' 
-      name='category' 
-      placeholder='Category'
-      autoComplete='off'
-      value={props.newNote.category}
-      onChange={(e) => props.handleChange(e)}
-    />
-    <button type='submit'>Add Note</button>
-  </form>
-));
-
-const StyledForm = styled(DropForm)`
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  gap: .8rem;
-  width: 100%;
+const StyledForm = styled(Form)`
   max-height: 0;
   visibility: hidden;
-  input {
-    margin: 0;
-  }
-  textarea {
-    resize: none;
-  }
 `;
 
 const FormContainer = styled.div`
   max-height: fit-container;
-  padding: .8rem .3rem 0 .3rem;
-  button {
-    border: none;
-    border-radius: ${props => props.theme.button.borderRadius};
-    background: ${props => props.theme.button.background};
-    padding: ${props => props.theme.button.padding};
-    width: fit-content;
-    :hover {
-      outline: none;
-      background: ${props => props.theme.button.focusBackground};
-    }
-    :focus {
-      outline: none;
-    }
-    span  {
-      color: ${props => props.theme.colors.lila};
-      display: inline-block;
-      vertical-align: middle;
-    }
-  }
+  padding: .8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px rgba(0, 0, 0, 0.1) inset;
+  background: ${props => props.theme.colors.white};
+  border-radius: 10px;
   .open-form {
-    border-top: 1px solid ${props => props.theme.colors.lavanda};
+    border-top: 1px solid ${props => props.theme.colors.grey};
     max-height: 225px;
-    margin-bottom: .8rem;
     padding-top: .8rem;
+    margin-top: .8rem;
     transition: max-height 0.25s ease-in;
     visibility: visible;
   }
@@ -115,49 +51,13 @@ export default function DropDownForm() {
   const [openMenu, setOpenMenu] = useState(false);
 
   function handleChange(e) {
-    let {value, name} = e.target;
-    setNewNote(prevValues => {
-      switch (name) {
-        case 'title':
-          return {
-            title: value,
-            sub: prevValues.sub,
-            content: prevValues.content,
-            category: prevValues.category
-          }
-          break;
-        case 'sub':
-          return {
-            title: prevValues.title,
-            sub: value,
-            content: prevValues.content,
-            category: prevValues.category
-          }
-          break;
-        case 'content':
-          return {
-            title: prevValues.title,
-            sub: prevValues.sub,
-            content: value,
-            category: prevValues.category
-          }
-          break;
-        case 'category':
-          return {
-            title: prevValues.title,
-            sub: prevValues.sub,
-            content: prevValues.content,
-            category: value
-          }
-          break;
-        default:
-          break;
-      }
-    });
+    e.preventDefault();
+    let form = newNote;
+    form[e.target.name] = e.target.value;
+    setNewNote({...form});
   }
 
-  function sendNote(e) {
-    // e.preventDefault();
+  function sendNote() {
     services.newNote(newNote)
     .then(res => {
       setNewNote(prevValues => {
@@ -187,10 +87,42 @@ export default function DropDownForm() {
       <StyledForm 
         ref={dropedMenu}
         className={StyledForm}
-        newNote={newNote}
-        handleChange={handleChange}
-        sendNote={sendNote}
-      />
+        onSubmit={sendNote}
+      >    
+        <input 
+          type='text' 
+          name='title' 
+          placeholder='Title'
+          autoComplete='off'
+          value={newNote.title || ""}
+          onChange={(e) => handleChange(e)}
+        />
+        <input 
+          type='text' 
+          name='sub' 
+          placeholder='Subtitle'
+          autoComplete='off'
+          value={newNote.sub || ""}
+          onChange={(e) => handleChange(e)}
+        />
+        <textarea
+          rows='5'
+          name='content' 
+          placeholder='Content'
+          autoComplete='off'
+          value={newNote.content || ""}
+          onChange={(e) => handleChange(e)}
+        />
+        <input 
+          type='text' 
+          name='category' 
+          placeholder='Category'
+          autoComplete='off'
+          value={newNote.category || ""}
+          onChange={(e) => handleChange(e)}
+        />
+        <Button type='submit' withText>Add Note</Button>
+      </StyledForm>
     </FormContainer>
   );
 }

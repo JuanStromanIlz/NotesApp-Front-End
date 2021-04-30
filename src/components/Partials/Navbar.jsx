@@ -1,77 +1,45 @@
 import styled from 'styled-components';
+import { Button } from './Button';
 import Filter from './Filter';
+import { ProfileCard } from './ProfileCard';
 
-const SliceMenu = (props) => {
-
-  return (
-    <div  id={props.id} className={props.className}>
-      <Filter 
-        setNotes={props.setNotes}
-      />
-      <span className='title'>Logout</span>
-    </div>
-  );
-};
-
-const StyledSliceMenu = styled(SliceMenu)`
-  background: white;
+const SliceMenu = styled.div`
   position: absolute;
   top: 100%;
   width: 0vw;
   height: 100vh;
   transform-origin: left;
   transition: width .5s ease;
+  background: ${props => props.theme.colors.white};
   display: flex; 
   flex-direction: column;
   overflow: scroll;
   overflow-x: hidden;
   white-space: nowrap;
   > * {
-    margin-left: .8rem;
+    margin: .8rem .8rem 0 .8rem;
+  }
+  @media (min-width: 50rem) and (min-height: 32rem) {
+    display: none;
   }
 `;
 
-const Nav = (props) => {
-  function dropMenu() {
-    props.openMenu()
-  }
-  return (
-    <nav className={props.className}>
-      <button id='drop-menu'>
-        <span className='material-icons' onClick={() => dropMenu()}>
-          menu
-        </span>
-      </button>
-      <h1 id='app-title'>Cascading Thoughts</h1>
-      <button id='exit'>
-        <span className='material-icons title' onClick={() => props.openMenu()}>
-          logout
-        </span>
-      </button>
-    </nav>
-  );
-}
-
-const StyledNav = styled(Nav)`
-  background: white;
+export const Nav = styled.nav`
+  background: ${props => props.theme.colors.dark};
+  color: ${props => props.theme.colors.white};
   position: relative;
   top: 0;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 1.3em;
+  flex-flow: row wrap;
+  gap: .8rem;
+  padding: .8rem;
   #app-title {
-    margin: 0;
+    margin: 0 auto;
   }
-  #drop-menu {
-    display: none;
-  }
-  #exit {
-    display: block;
-    position: absolute;
-    top: .8rem;
-    right: .8rem;
-    bottom: .8rem;
+  @media (min-width: 50rem) and (min-height: 32rem) {
+    #drop-menu {
+      display: none;
+    }
   }
 `;
 
@@ -79,77 +47,12 @@ const NavBarContainer = styled.div`
   position: sticky;
   z-index: 1;
   top: 0;
-  > :first-child {
-    padding: .8rem;
-  }
-  display: grid;
-  grid-template-rows: auto 1fr;
-  .title {
-    font-size: 1.2rem;
-  }
-  .sub {
-    font-size: 1rem;
-  }
-  button {
-    background: transparent;
-    border: none;
-    text-align: left;
-    padding: 0;
-    gap: .8rem;
-    :hover {
-      filter: brightness(120%);
-    }
-    :focus {
-      outline: none;
-    }
-    .material-icons  {
-      color: ${props => props.theme.colors.lila};
-      display: inline-block;
-      vertical-align: middle;
-    }
-  }
   .slice {
     width: 100vw;
   }
-  
-  @media (max-width: 1500px) {
-    #drop-menu {
-      display: none;
-    } 
-  }
-  @media (max-width: 800px) {
-    ${StyledNav} {
-      justify-content: center;
-      #drop-menu {
-        display: block;
-        position: absolute;
-        top: .8rem;
-        left: .8rem;
-        bottom: .8rem;
-      }  
-      #exit {
-        display: none;
-      }
-    }
-  }
-  @media (max-width: 480px) {
-    ${StyledNav} {
-      justify-content: center;
-      #drop-menu {
-        display: block;
-        position: absolute;
-        top: .8rem;
-        left: .8rem;
-        bottom: .8rem;
-      }  
-      #exit {
-        display: none;
-      }
-    }
-  }
 `;
 
-export default function NavBar(props) {
+export const CompleteNav = ({setNotes}) => {
   function openMenu() {
     document.getElementById('userNotes').classList.toggle('view-fix');
     document.getElementById('sliceMenu').classList.toggle('slice');
@@ -157,15 +60,18 @@ export default function NavBar(props) {
   
   return (
     <NavBarContainer>
-      <StyledNav 
-        className={StyledNav}
-        openMenu={openMenu}
-      />
-      <StyledSliceMenu 
-        id='sliceMenu'
-        className={StyledSliceMenu}
-        setNotes={props.setNotes}
-      />
+      <Nav>
+        <Button id='drop-menu'>
+          <span className='material-icons' onClick={() => openMenu()}>
+            menu
+          </span>
+        </Button>
+        <h1 id='app-title'>Cascading Thoughts</h1>
+      </Nav>
+      <SliceMenu id='sliceMenu'>
+        <ProfileCard />
+        <Filter setNotes={setNotes} />
+      </SliceMenu>
     </NavBarContainer>
   );
 }

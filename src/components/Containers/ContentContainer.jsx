@@ -8,10 +8,9 @@ const Container = (props) => (
 
 const StyledContainer = styled(Container)`
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  > * {
-    padding: 0 .8rem;
-  }
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: .8rem;
+  padding: .8rem;
 `;
 
 export default function ContentContainer(props) {

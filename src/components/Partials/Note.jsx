@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns';
 import Linkify from 'react-linkify';
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Button } from './Button';
 import services from '../../services';
 
 const Note = forwardRef((props, ref) => (
@@ -14,22 +15,21 @@ const Note = forwardRef((props, ref) => (
         </div>
         <div className='post-actions'>
           <Link to={`/edit/${props.id}`}>  
-            <button className='actions-big'>
+            <Button className='actions-big'>
               <span className='material-icons'>edit_note</span>
-            </button>
+            </Button>
           </Link>
-          <button className='actions-big' onClick={() => props.deleteNote()}>
+          <Button className='actions-big' onClick={() => props.deleteNote()}>
             <span className='material-icons'>delete_forever</span>
-          </button>
-          <div ref={props.dropMenu} className='actions-small'> {/* This display when viewport is less than 480px */}
-            <button onClick={() => props.openMenu()} onMouseLeave={() => props.openMenu()}>
+          </Button>
+          <div ref={props.dropMenu} className='actions-small'> 
+          {/* This display when viewport is less than 480px */}
+            <Button onClick={() => props.openMenu()} onMouseLeave={() => props.openMenu()}>
               <span className='material-icons'>more_vert</span>
-            </button>
+            </Button>
             <div className='actions-drop'>
-              <Link to={`/edit/${props.id}`}>  
-                <button className='actions-big'>Edit note</button>
-              </Link>
-              <button onClick={() => props.deleteNote()}>Delete</button>
+              <Button onClick={() => props.updateNote(props.id)}>Edit note</Button>
+              <Button onClick={() => props.deleteNote()}>Delete</Button>
             </div>
           </div>
         </div>
@@ -47,15 +47,15 @@ const Note = forwardRef((props, ref) => (
 ));
 
 const StyledNote = styled(Note)` 
-  padding: .8rem;
-  margin-bottom: .8rem;
+  padding: 0 .8rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px rgba(0, 0, 0, 0.1) inset;
-  background: ${props => props.theme.colors.lavanda};
+  background: ${props => props.theme.colors.white};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: .3rem;
   header {
+    padding-top: .8rem;
     display: flex;
     flex-direction: row;
     gap: .3rem;
@@ -73,28 +73,6 @@ const StyledNote = styled(Note)`
       flex-direction: row;
       gap: .8rem;
       margin: 0 0 auto auto;
-      button {
-        border: none;
-        border-radius: ${props => props.theme.button.borderRadius};
-        background: transparent;
-        padding: 0;
-        :hover {
-          span {
-            filter: brightness(120%);
-          }
-        }
-        :focus {
-          outline: none;
-          span {
-            filter: brightness(120%);
-          }
-        }
-        span  {
-          color: ${props => props.theme.colors.lila};
-          display: inline-block;
-          vertical-align: middle;
-        }
-      }
     }
   }
   .post-sub {
@@ -107,7 +85,8 @@ const StyledNote = styled(Note)`
   }
   footer {
     padding-top: .3rem;
-    border-top: 1px solid ${props => props.theme.colors.lila};
+    padding-bottom: .8rem;
+    border-top: 1px solid ${props => props.theme.colors.grey};
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -127,8 +106,8 @@ const StyledNote = styled(Note)`
       flex-direction: column;
       gap: .8rem;
       padding: .8rem;
-      background: ${props => props.theme.colors.lavanda};
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px rgba(0, 0, 0, 0.1) inset;
+      background: ${props => props.theme.colors.white};
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1), 0 -1px ${props => props.theme.colors.light} inset;
       border-radius: 10px;
       transform: scaleY(0);    
       transform-origin: top;
@@ -149,12 +128,18 @@ const StyledNote = styled(Note)`
 
 const NoteContainer = styled.div`
 /* Note Animations */
+  .delete-animation {
+    transform: scaleY(0);
+    filter: opacity(.7);
+    transition: filter .3s ease-in, transform .5s ease-in;
+  }
   .delete {
     display: none;
   }
   .open-menu {
     .actions-drop {
       transform: scaleY(1); 
+      background: ${props => props.theme.colors.grey};
     }
   }
 /* Note Animations */
@@ -195,8 +180,15 @@ export default function NoteComponent(props) {
   }
 
   function deleteNote() {
-    postRef.current.classList.add('delete');
-    services.deleteNote(dataNote._id)
+    postRef.current.classList.add('delete-animation');
+    setTimeout(() => {
+      postRef.current.classList.add('delete');
+      services.deleteNote(dataNote._id)
+    }, 680);
+  }
+
+  function updateNote(id) {
+
   }
 
   function openMenu() {
@@ -205,7 +197,7 @@ export default function NoteComponent(props) {
 
   useEffect(() => {
     setNote(props.note)
-  }, []);
+  }, [props]);
 
   return (
     <NoteContainer>
@@ -214,6 +206,7 @@ export default function NoteComponent(props) {
         dropMenu={dropMenu}
         className={StyledNote}
         deleteNote={deleteNote}
+        updateNote={updateNote}
         openMenu={openMenu}
         id={dataNote._id}
         title={dataNote.title}

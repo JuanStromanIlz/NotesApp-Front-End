@@ -11,6 +11,7 @@ const StyledContainer = styled(Container)`
   margin: 0; 
   display: grid;
   grid-template-rows: auto 1fr auto;
+  background: ${props => props.theme.colors.grey};
 `;
 
 export default function ViewContainer(props) {

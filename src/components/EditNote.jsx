@@ -4,65 +4,13 @@ import { format, parseISO } from 'date-fns';
 import styled from 'styled-components';
 import ViewContainer from './Containers/ViewContainer';
 import ContentContainer from './Containers/ContentContainer';
-import PlainNavbar from './Partials/PlainNavbar';
+import { Nav } from './Partials/Navbar';
+import { Form } from './Partials/Form';
 import Footer from './Partials/Footer';
 import services from '../services';
 
-const Edit = (props) => (
-  <div className={props.className}>
-    <form onSubmit={(e) => props.saveNote(e)}>
-      <input 
-        type='text' 
-        name='title' 
-        placeholder='Title'
-        autoComplete='off'
-        value={props.note.title || ""}
-        onChange={(e) => props.handleChange(e)}
-      />
-      <input 
-        type='text' 
-        name='sub' 
-        placeholder='Subtitle'
-        autoComplete='off'
-        value={props.note.sub || ""}
-        onChange={(e) => props.handleChange(e)}
-      />
-      <textarea 
-        rows='10'
-        name='content' 
-        placeholder='Content'
-        autoComplete='off'
-        value={props.note.content || ""}
-        onChange={(e) => props.handleChange(e)}
-      />
-      <input 
-        type='text' 
-        name='category' 
-        placeholder='Category'
-        autoComplete='off'
-        value={props.note.category || ""}
-        onChange={(e) => props.handleChange(e)}
-      />
-      <button type='submit'>Guardar</button>
-    </form>
-    <span>Ultima edicion {props.dateToShow}</span>
-  </div>
-);
-
-const StyledEdit = styled(Edit)`
+const StyledEdit = styled.div`
   grid-column: 1 / 4;
-  form {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    gap: .8rem;
-    input {
-      margin: 0;
-    }
-    textarea {
-      resize: none;
-    }
-  }
 `;
 
 export default function EditNote(props) {
@@ -71,87 +19,81 @@ export default function EditNote(props) {
   const dateToShow = format(parseISO(note.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy");
   const history = useHistory();
 
-  function saveNote(e) {
-    e.preventDefault()
+  function handleChange(e) {
+    e.preventDefault();
+    let form = note;
+    form[e.target.name] = e.target.value;
+    setNote({...form});
+  }
+
+  function saveNote() {
     services.updateNote(note)
     .then(res =>{
-      history.push("/my-notes");
+      console.log("listo")
     })
     .catch(err => {
       console.log(err)
     });
   }
 
-  function handleChange(e) {
-    let {value, name} = e.target;
-    setNote(prevValues => {
-      switch (name) {
-        case 'title':
-          return {
-            _id: prevValues._id,
-            updatedAt: prevValues.updatedAt,
-            title: value,
-            sub: prevValues.sub,
-            content: prevValues.content,
-            category: prevValues.category
-          }
-          break;
-        case 'sub':
-          return {
-            _id: prevValues._id,
-            updatedAt: prevValues.updatedAt,
-            title: prevValues.title,
-            sub: value,
-            content: prevValues.content,
-            category: prevValues.category
-          }
-          break;
-        case 'content':
-          return {
-            _id: prevValues._id,
-            updatedAt: prevValues.updatedAt,
-            title: prevValues.title,
-            sub: prevValues.sub,
-            content: value,
-            category: prevValues.category
-          }
-          break;
-        case 'category':
-          return {
-            _id: prevValues._id,
-            updatedAt: prevValues.updatedAt,
-            title: prevValues.title,
-            sub: prevValues.sub,
-            content: prevValues.content,
-            category: value
-          }
-          break;
-        default:
-          break;
-      }
-    });
-  }
-
-  useEffect(() => {
-    services.getNote(params.id)
+  function getDataNote(id) {
+    services.getNote(id)
     .then(res => {
     setNote(res.data)
     })
     .catch(err => {
       console.log(err)
     });
+  }
+
+  useEffect(() => {
+    getDataNote(params.id)
   }, []);
 
   return (
     <ViewContainer>
-      <PlainNavbar />
+      <Nav>
+        <h1 id='app-title'>Cascading Thoughts</h1>
+      </Nav>
       <ContentContainer>
-        <StyledEdit 
-          note={note}
-          handleChange={handleChange}
-          saveNote={saveNote}
-          dateToShow={dateToShow}
-        />
+        <StyledEdit>
+          <Form onSubmit={saveNote}>
+            <input 
+              type='text' 
+              name='title' 
+              placeholder='Title'
+              autoComplete='off'
+              value={note.title}
+              onChange={(e) => handleChange(e)}
+            />
+            <input 
+              type='text' 
+              name='sub' 
+              placeholder='Subtitle'
+              autoComplete='off'
+              value={note.sub}
+              onChange={(e) => handleChange(e)}
+            />
+            <textarea 
+              rows='10'
+              name='content' 
+              placeholder='Content'
+              autoComplete='off'
+              value={note.content}
+              onChange={(e) => handleChange(e)}
+            />
+            <input 
+              type='text' 
+              name='category' 
+              placeholder='Category'
+              autoComplete='off'
+              value={note.category}
+              onChange={(e) => handleChange(e)}
+            />
+            <button type='submit'>Guardar</button>
+          </Form>
+          <span>Ultima edicion {dateToShow}</span>
+        </StyledEdit>
       </ContentContainer>
       <Footer />
     </ViewContainer>
