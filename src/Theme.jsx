@@ -8,7 +8,9 @@ const theme = {
     grey: '#D9DFDC',
     main: '#544BAD',
     light: '#958DCE',
-    dark: '#2D3B6E'
+    dark: '#2D3B6E',
+    disable: '#D9DFDC',
+    selected: '#958DCE'
   },
   fonts: ['Source Sans Pro']
 }

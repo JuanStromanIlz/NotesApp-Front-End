@@ -4,8 +4,9 @@ import Filter from './Filter';
 import { ProfileCard } from './ProfileCard';
 
 const SliceMenu = styled.div`
+  z-index: 1;
   position: absolute;
-  top: 100%;
+  top: 0;
   width: 0vw;
   height: 100vh;
   transform-origin: left;
@@ -13,11 +14,13 @@ const SliceMenu = styled.div`
   background: ${props => props.theme.colors.white};
   display: flex; 
   flex-direction: column;
-  overflow: scroll;
-  overflow-x: hidden;
+  overflow: hidden;
   white-space: nowrap;
-  > * {
-    margin: .8rem .8rem 0 .8rem;
+  .menu-wrapper {
+    margin: 57px .8rem .8rem .8rem;
+    padding-top: .8rem;
+    flex-grow: 1;
+    overflow: scroll;
   }
   @media (min-width: 50rem) and (min-height: 32rem) {
     display: none;
@@ -25,6 +28,7 @@ const SliceMenu = styled.div`
 `;
 
 export const Nav = styled.nav`
+  z-index: 2;
   background: ${props => props.theme.colors.dark};
   color: ${props => props.theme.colors.white};
   position: relative;
@@ -45,7 +49,7 @@ export const Nav = styled.nav`
 
 const NavBarContainer = styled.div`
   position: sticky;
-  z-index: 1;
+  z-index: 3;
   top: 0;
   .slice {
     width: 100vw;
@@ -69,8 +73,10 @@ export const CompleteNav = ({setNotes}) => {
         <h1 id='app-title'>Cascading Thoughts</h1>
       </Nav>
       <SliceMenu id='sliceMenu'>
-        <ProfileCard />
-        <Filter setNotes={setNotes} />
+        <div className='menu-wrapper'>
+          <ProfileCard />
+          <Filter setNotes={setNotes} />
+        </div>
       </SliceMenu>
     </NavBarContainer>
   );

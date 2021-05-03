@@ -23,10 +23,6 @@ const StyledSearch = styled.div`
   h3 {
     margin: 0;
   }
-  ${Form} { 
-    display: flex;
-    flex-flow: row wrap;
-  }
 `;
 
 const Categories = (props) => {
@@ -97,24 +93,26 @@ const Categories = (props) => {
       <div ref={categoryList} className='cate-list' >
         <Form onInput={sendFilter}>
           {categories.map(value => 
-              <div
-                key={value}
-                className='cate-input'
-              >
-                <h3 className='sub'>{value}</h3>
-                <input
-                  type="checkbox"
-                  name={value}
+              <div className='cate-input'>
+                <input 
+                  type='checkbox' 
+                  name={value} 
                   checked={isChecked[value] || false}
                   onChange={handleChange}
                 />
+                <h3>{value}</h3>
               </div>
+          
           )}
         </Form> 
       </div>
     </StyledSearch>
   );
 }
+
+const StyledForm = styled(Form)`
+  flex-flow: row nowrap;
+`;
 
 const SearchBy = (props) => {
   const [input, setInput] = useState("");
@@ -143,7 +141,7 @@ const SearchBy = (props) => {
   return (
     <StyledSearch>
       <h3>Buscar</h3>
-      <Form onSubmit={makeSearch}>
+      <StyledForm onSubmit={makeSearch}>
         <input 
           className='sub'
           autoComplete='off'
@@ -155,7 +153,7 @@ const SearchBy = (props) => {
         <Button type='submit' className={`${input.length < 1 && 'disable' }`}>
           <span className='material-icons'>search</span>
         </Button>
-      </Form>
+      </StyledForm>
     </StyledSearch>
   );
 }
@@ -171,7 +169,6 @@ const FilterContainer = styled.div`
     display: block;
     ${Form} {
       display: flex;
-      overflow: hidden;
       white-space: nowrap;
       flex-direction: column;
       justify-content: flex-start;

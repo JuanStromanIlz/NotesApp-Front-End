@@ -4,6 +4,7 @@ import services from '../services';
 import ViewContainer from './Containers/ViewContainer';
 import ContentContainer from './Containers/ContentContainer';
 import Note from './Partials/Note';
+import EditNote from './EditNote';
 import Footer from './Partials/Footer';
 import DropDownForm from './Partials/DropDownForm';
 import { ProfileCard } from './Partials/ProfileCard';
@@ -109,6 +110,7 @@ const Actions = styled.div`
 
 export default function UserNotes() {
   const [notes, setNotes] = useState([[]]);
+  const [noteEdit, setNoteEdit] = useState(null);
 
   function getUserNotes() {
     services.getAllNotes()
@@ -122,7 +124,7 @@ export default function UserNotes() {
 
   useEffect(() => {
     getUserNotes()
-  }, []);
+  }, [noteEdit]);
 
   return (
     <ViewContainer id='userNotes'>
@@ -141,10 +143,13 @@ export default function UserNotes() {
           />
           }
           {notes.map(note => 
-            <Note 
-              key={Math.random()}
-              note={note}
-            />
+            !(note._id === noteEdit) ?
+              <Note 
+                key={note._id}
+                note={note}
+                setNoteEdit={setNoteEdit}
+              /> :
+            <EditNote key={note._id} noteEdit={note} setNoteEdit={setNoteEdit}/>
           )}
         </ListContainer>
       </ContentContainer>

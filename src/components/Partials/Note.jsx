@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { format, parseISO } from 'date-fns';
 import Linkify from 'react-linkify';
 import { forwardRef, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { Button } from './Button';
 import services from '../../services';
 
@@ -14,22 +14,20 @@ const Note = forwardRef((props, ref) => (
           <h3 className='post-title'>{props.title}</h3>
         </div>
         <div className='post-actions'>
-          <Link to={`/edit/${props.id}`}>  
-            <Button className='actions-big'>
-              <span className='material-icons'>edit_note</span>
-            </Button>
-          </Link>
+          <Button className='actions-big' onClick={() => props.updateNote(props.id)}>
+            <span className='material-icons'>edit_note</span>
+          </Button>
           <Button className='actions-big' onClick={() => props.deleteNote()}>
             <span className='material-icons'>delete_forever</span>
           </Button>
           <div ref={props.dropMenu} className='actions-small'> 
           {/* This display when viewport is less than 480px */}
-            <Button onClick={() => props.openMenu()} onMouseLeave={() => props.openMenu()}>
+            <Button onClick={() => props.openMenu()} onBlur={() => props.openMenu()}>
               <span className='material-icons'>more_vert</span>
             </Button>
             <div className='actions-drop'>
-              <Button onClick={() => props.updateNote(props.id)}>Edit note</Button>
-              <Button onClick={() => props.deleteNote()}>Delete</Button>
+              <Button onClick={() => props.updateNote(props.id)}>Editar</Button>
+              <Button onClick={() => props.deleteNote(props.id)}>Delete</Button>
             </div>
           </div>
         </div>
@@ -94,12 +92,14 @@ const StyledNote = styled(Note)`
     flex-wrap: wrap;
   }
   .actions-big {
-    display: block;
+    display: none;
   }
   .actions-small {
-    display: none;
     position: relative;
     .actions-drop {
+      position: absolute;  
+      top: 100%;
+      right: 0;
       white-space: nowrap;
       width: fit-content;
       display: flex;
@@ -112,15 +112,8 @@ const StyledNote = styled(Note)`
       transform: scaleY(0);    
       transform-origin: top;
       transition: transform .1s ease;
-      position: absolute;  
-      top: 100%;
-      right: 0;
-      > button {
-        text-align: left;
+      button {
         font-size: 1rem;
-        :hover {
-          filter: brightness(120%);
-        }
       }
     }
   }
@@ -142,31 +135,14 @@ const NoteContainer = styled.div`
       background: ${props => props.theme.colors.grey};
     }
   }
-/* Note Animations */
-  @media (max-width: 1500px) {
-    .actions-big {
-      display: block;
-    }
-    .actions-small {
-      display: none;
-    }
+@media (min-width: 50rem) and (min-height: 32rem) {
+  .actions-big {
+    display: block;
   }
-  @media (max-width: 800px) {
-    .actions-big {
-      display: block;
-    }
-    .actions-small {
-      display: none;
-    }
+  .actions-small {
+    display: none;
   }
-  @media (max-width: 480px) {
-    .actions-big {
-      display: none;
-    }
-    .actions-small {
-      display: block;
-    }
-  }
+}
 `;
 
 export default function NoteComponent(props) {
@@ -188,7 +164,9 @@ export default function NoteComponent(props) {
   }
 
   function updateNote(id) {
-
+    // return <Redirect to={`/edit/${id}`} />
+    // return <Link to={`/edit/${id}`} />
+    props.setNoteEdit(id)
   }
 
   function openMenu() {
