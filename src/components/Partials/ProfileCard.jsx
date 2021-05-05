@@ -1,23 +1,7 @@
 import { useState, useEffect } from 'react';
+import { unstable_renderSubtreeIntoContainer } from 'react-dom/cjs/react-dom.development';
 import styled from 'styled-components';
 import { Button } from './Button';
-
-const profile = {
-  "_id": "607c409b01ef9b10e05f97bc",
-  "fName": "Juan",
-  "lName": "Stroman",
-  "userPhoto": {
-    "data": {
-      "height": 200,
-      "is_silhouette": false,
-      "url": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=2804743983097085&height=200&width=200&ext=1621347736&hash=AeQ5kJv1PP3sBWRidI0",
-      "width": 200
-    }
-  },
-  "email": "juanstroman@gmail.com",
-  "facebookId": "2804743983097085",
-  "__v": 0
-};
 
 const Card = styled.div `
   position: relative;
@@ -46,23 +30,24 @@ const Card = styled.div `
   }
 `;
 
-export const ProfileCard = (props) => {
-  const [notes, setNotes] = useState(3);
+export const ProfileCard = ({user}) => {
+  const [profile, setProfile] = useState({});
+
   useEffect(() => {
-    setNotes(props.noteLenght)
-  }, [props]);
+    setProfile(user)
+  }, [user]);
 
   return (
     <Card>
       <header>
-        <img id='profile-img' src={profile.userPhoto.data.url} alt={profile.fName}/>
+        <img id='profile-img' src={profile.photo} alt={profile.fName}/>
         <Button>
           <span className='material-icons'>logout</span>
         </Button>
       </header>
       <h3 className='userInfo'>{profile.fName}</h3>
       <h4 className='userInfo'>{profile.email}</h4>
-      <h4 id='user-notes'>{notes} Notas</h4>
+      <h4 id='user-notes'>{profile.notes} {profile.notes < 2 ? 'Nota' : 'Notas'}</h4>
     </Card>
   );
 } 

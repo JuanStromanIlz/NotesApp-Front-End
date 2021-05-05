@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { format, parseISO } from 'date-fns';
+import {es} from "date-fns/locale";
 import Linkify from 'react-linkify';
 import { forwardRef, useEffect, useRef, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
 import { Button } from './Button';
 import services from '../../services';
 
@@ -38,7 +38,7 @@ const Note = forwardRef((props, ref) => (
       </div>  
       <footer className='category'>
         <span>{props.category}</span>
-        <span>Created at {props.updatedAt}</span>
+        <span>Ultima edicion {props.updatedAt}</span>
       </footer>
     </article>
   </Linkify>
@@ -149,7 +149,7 @@ export default function NoteComponent(props) {
   const [dataNote, setData] = useState({});
   const dropMenu = useRef(null);
   const postRef = useRef(null);
-  const dateToShow = format(parseISO(dataNote.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy");
+  const dateToShow = format(parseISO(dataNote.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy", {locale: es});
 
   function setNote(note) {
     setData(note)
@@ -164,8 +164,6 @@ export default function NoteComponent(props) {
   }
 
   function updateNote(id) {
-    // return <Redirect to={`/edit/${id}`} />
-    // return <Link to={`/edit/${id}`} />
     props.setNoteEdit(id)
   }
 

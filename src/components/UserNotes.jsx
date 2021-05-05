@@ -109,6 +109,7 @@ const Actions = styled.div`
 `;
 
 export default function UserNotes() {
+  const [user, setUser] = useState({});
   const [notes, setNotes] = useState([[]]);
   const [noteEdit, setNoteEdit] = useState(null);
 
@@ -122,17 +123,28 @@ export default function UserNotes() {
    });
   }
 
+  function getUser() {
+    services.getUserInfo()
+    .then(res => {
+      setUser(res.data);
+    })
+    .catch(err => {
+      console.log(err)
+    });
+  }
+
   useEffect(() => {
-    getUserNotes()
-  }, [noteEdit]);
+    getUserNotes();
+    getUser();
+  }, [notes]);
 
   return (
     <ViewContainer id='userNotes'>
-      <CompleteNav notesLenght={notes.length} setNotes={setNotes} />
+      <CompleteNav setNotes={setNotes}  setNoteEdit={setNoteEdit} user={user} />
       <ContentContainer>
         <Actions>
-          <ProfileCard />
-          <Filter setNotes={setNotes} />
+          <ProfileCard user={user} />
+          <Filter setNotes={setNotes} setNoteEdit={setNoteEdit} />
         </Actions>
         <ListContainer>
           <DropDownForm />

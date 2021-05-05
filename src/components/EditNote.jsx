@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
+import { es } from "date-fns/locale";
 import styled from 'styled-components';
 import { Form } from './Partials/Form';
 import { Button } from './Partials/Button';
@@ -18,7 +19,7 @@ const StyledEdit = styled.div`
 
 export default function EditNote({noteEdit, setNoteEdit}) {
   const [note, setNote] = useState({});
-  const dateToShow = format(parseISO(note.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy");
+  const dateToShow = format(parseISO(note.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy", {locale: es});
 
   function handleChange(e) {
     e.preventDefault();
@@ -27,8 +28,8 @@ export default function EditNote({noteEdit, setNoteEdit}) {
     setNote({...form});
   }
 
-  function saveNote() {
-    // e.preventDefault();
+  function saveNote(e) {
+    e.preventDefault();
     services.updateNote(note)
     .then(res =>{
       setNoteEdit(null);
@@ -44,7 +45,7 @@ export default function EditNote({noteEdit, setNoteEdit}) {
 
   return (
     <StyledEdit>
-      <Form onSubmit={saveNote}>
+      <Form onSubmit={(e) => saveNote(e)}>
         <span>Ultima edicion {dateToShow}</span>
         <input 
           type='text' 

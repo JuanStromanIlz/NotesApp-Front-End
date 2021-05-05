@@ -56,7 +56,7 @@ const NavBarContainer = styled.div`
   }
 `;
 
-export const CompleteNav = ({setNotes}) => {
+export const CompleteNav = ({setNotes, setNoteEdit, user}) => {
   function openMenu() {
     document.getElementById('userNotes').classList.toggle('view-fix');
     document.getElementById('sliceMenu').classList.toggle('slice');
@@ -74,8 +74,8 @@ export const CompleteNav = ({setNotes}) => {
       </Nav>
       <SliceMenu id='sliceMenu'>
         <div className='menu-wrapper'>
-          <ProfileCard />
-          <Filter setNotes={setNotes} />
+          <ProfileCard user={user} />
+          <Filter setNotes={setNotes} setNoteEdit={setNoteEdit} />
         </div>
       </SliceMenu>
     </NavBarContainer>

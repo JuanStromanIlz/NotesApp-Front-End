@@ -12,6 +12,9 @@ class Services {
   createUser() {
     return http.get('/facebook')
   }
+  getUserInfo() {
+    return http.get('/profile')
+  }
   //devuelve todos sus notes
   getAllNotes() {
     return http.get("/allNotes")
@@ -38,7 +41,7 @@ class Services {
   }
   //edita el note seleccionado
   updateNote(data) {
-    return http.patch('/updateNote', data)
+    return http.put('/updateNote', data)
   }
   //elimina el note seleccionado
   deleteNote(id) {

@@ -57,7 +57,8 @@ export default function DropDownForm() {
     setNewNote({...form});
   }
 
-  function sendNote() {
+  function sendNote(e) {
+    e.preventDefault();
     services.newNote(newNote)
     .then(res => {
       setNewNote(prevValues => {
@@ -74,6 +75,7 @@ export default function DropDownForm() {
 
   function dropMenu() {
     dropedMenu.current.classList.toggle('open-form');
+    document.getElementById('title').focus();
     setOpenMenu(!openMenu);
   }
 
@@ -87,13 +89,16 @@ export default function DropDownForm() {
       <StyledForm 
         ref={dropedMenu}
         className={StyledForm}
-        onSubmit={sendNote}
+        onSubmit={(e) => sendNote(e)}
+        noValidate
       >    
         <input 
+          id='title'
           type='text' 
           name='title' 
           placeholder='Title'
           autoComplete='off'
+          required
           value={newNote.title || ""}
           onChange={(e) => handleChange(e)}
         />
@@ -110,6 +115,7 @@ export default function DropDownForm() {
           name='content' 
           placeholder='Content'
           autoComplete='off'
+          required
           value={newNote.content || ""}
           onChange={(e) => handleChange(e)}
         />
@@ -118,6 +124,7 @@ export default function DropDownForm() {
           name='category' 
           placeholder='Category'
           autoComplete='off'
+          required
           value={newNote.category || ""}
           onChange={(e) => handleChange(e)}
         />

@@ -25,7 +25,7 @@ const StyledSearch = styled.div`
   }
 `;
 
-const Categories = (props) => {
+const Categories = ({setNotes, setNoteEdit}) => {
   const [categories, setCategories] = useState([]);
   const [isChecked, setChecked] = useState({});
   const categoryList = useRef(null);
@@ -50,8 +50,9 @@ const Categories = (props) => {
     selectedValues = Object.keys(selectedValues);
     if (selectedValues.length === 0) selectedValues = categories;
     services.getFilteredCategories(selectedValues)
-    .then(res => {
-      props.setNotes(res.data)
+    .then(res => { 
+      setNotes(res.data)
+      setNoteEdit(null)
     })
     .catch(err => {
       console.log(err)
@@ -93,7 +94,7 @@ const Categories = (props) => {
       <div ref={categoryList} className='cate-list' >
         <Form onInput={sendFilter}>
           {categories.map(value => 
-              <div className='cate-input'>
+              <div key={value} className='cate-input'>
                 <input 
                   type='checkbox' 
                   name={value} 
@@ -114,7 +115,7 @@ const StyledForm = styled(Form)`
   flex-flow: row nowrap;
 `;
 
-const SearchBy = (props) => {
+const SearchBy = ({setNotes, setNoteEdit}) => {
   const [input, setInput] = useState("");
 
   function handleChange(e) {
@@ -126,7 +127,8 @@ const SearchBy = (props) => {
     e.preventDefault();
     services.getBySearch(input)
     .then(res => {
-      props.setNotes(res.data)
+      setNotes(res.data)
+      setNoteEdit(null)
     })
     .catch(err => {
       console.log(err)
@@ -183,15 +185,17 @@ const FilterContainer = styled.div`
   }
 `;
 
-export default function Filter(props) {
+export default function Filter({setNotes, setNoteEdit}) {
 
   return (
     <FilterContainer>
       <SearchBy
-        setNotes={props.setNotes}
+        setNotes={setNotes}
+        setNoteEdit={setNoteEdit}
       />
       <Categories 
-        setNotes={props.setNotes}
+        setNotes={setNotes}
+        setNoteEdit={setNoteEdit}
       />
     </FilterContainer>
   );
