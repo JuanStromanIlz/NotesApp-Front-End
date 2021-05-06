@@ -2,49 +2,10 @@ import styled from 'styled-components';
 import { format, parseISO } from 'date-fns';
 import {es} from "date-fns/locale";
 import Linkify from 'react-linkify';
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from './Button';
-import services from '../../services';
 
-const Note = forwardRef((props, ref) => (
-  <Linkify>
-    <article ref={props.post} className={props.className}>
-      <header>
-        <div className='post-info'>
-          <h3 className='post-title'>{props.title}</h3>
-        </div>
-        <div className='post-actions'>
-          <Button className='actions-big' onClick={() => props.updateNote(props.id)}>
-            <span className='material-icons'>edit_note</span>
-          </Button>
-          <Button className='actions-big' onClick={() => props.deleteNote()}>
-            <span className='material-icons'>delete_forever</span>
-          </Button>
-          <div ref={props.dropMenu} className='actions-small'> 
-          {/* This display when viewport is less than 480px */}
-            <Button onClick={() => props.openMenu()} onBlur={() => props.openMenu()}>
-              <span className='material-icons'>more_vert</span>
-            </Button>
-            <div className='actions-drop'>
-              <Button onClick={() => props.updateNote(props.id)}>Editar</Button>
-              <Button onClick={() => props.deleteNote(props.id)}>Delete</Button>
-            </div>
-          </div>
-        </div>
-      </header> 
-      {props.sub && <h4 className='post-sub'>{props.sub}</h4>}
-      <div className='post-content'>
-        <p>{props.content}</p>
-      </div>  
-      <footer className='category'>
-        <span>{props.category}</span>
-        <span>Ultima edicion {props.updatedAt}</span>
-      </footer>
-    </article>
-  </Linkify>
-));
-
-const StyledNote = styled(Note)` 
+const Note = styled.article` 
   padding: 0 .8rem;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 -1px rgba(0, 0, 0, 0.1) inset;
   background: ${props => props.theme.colors.white};
@@ -145,26 +106,21 @@ const NoteContainer = styled.div`
 }
 `;
 
-export default function NoteComponent(props) {
+export default function NoteComponent({note, handleDelete, handleEdit}) {
   const [dataNote, setData] = useState({});
   const dropMenu = useRef(null);
   const postRef = useRef(null);
-  const dateToShow = format(parseISO(dataNote.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy", {locale: es});
 
-  function setNote(note) {
-    setData(note)
-  }
-
-  function deleteNote() {
+  function deleteNote(id) {
     postRef.current.classList.add('delete-animation');
     setTimeout(() => {
       postRef.current.classList.add('delete');
-      services.deleteNote(dataNote._id)
+      handleDelete(id)
     }, 680);
   }
 
   function updateNote(id) {
-    props.setNoteEdit(id)
+    handleEdit(id)
   }
 
   function openMenu() {
@@ -172,25 +128,46 @@ export default function NoteComponent(props) {
   }
 
   useEffect(() => {
-    setNote(props.note)
-  }, [props]);
+    setData(note)
+  }, [note]);
 
   return (
     <NoteContainer>
-      <StyledNote 
-        post={postRef}
-        dropMenu={dropMenu}
-        className={StyledNote}
-        deleteNote={deleteNote}
-        updateNote={updateNote}
-        openMenu={openMenu}
-        id={dataNote._id}
-        title={dataNote.title}
-        sub={dataNote.sub}
-        category={dataNote.category}
-        content={dataNote.content}
-        updatedAt={dateToShow}
-      />
+      <Note ref={postRef}>
+        <Linkify>
+          <header>
+            <div className='post-info'>
+              <h3 className='post-title'>{dataNote.title}</h3>
+            </div>
+            <div className='post-actions'>
+              <Button className='actions-big' onClick={() => updateNote(dataNote._id)}>
+                <span className='material-icons'>edit_note</span>
+              </Button>
+              <Button className='actions-big' onClick={() => deleteNote(dataNote._id)}>
+                <span className='material-icons'>delete_forever</span>
+              </Button>
+              <div ref={dropMenu} className='actions-small'> 
+              {/* This display when viewport is less than 480px */}
+                <Button onClick={() => openMenu()} onBlur={() => openMenu()}>
+                  <span className='material-icons'>more_vert</span>
+                </Button>
+                <div className='actions-drop'>
+                  <Button onClick={() => updateNote(dataNote._id)}>Editar</Button>
+                  <Button onClick={() => deleteNote(dataNote._id)}>Delete</Button>
+                </div>
+              </div>
+            </div>
+          </header> 
+          {dataNote.sub && <h4 className='post-sub'>{dataNote.sub}</h4>}
+          <div className='post-content'>
+            <p>{dataNote.content}</p>
+          </div>  
+          <footer className='category'>
+            <span>{dataNote.category}</span>
+            <span>Ultima edicion {format(parseISO(dataNote.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy", {locale: es})}</span>
+          </footer>
+        </Linkify>
+      </Note>
     </NoteContainer>
   );
 }

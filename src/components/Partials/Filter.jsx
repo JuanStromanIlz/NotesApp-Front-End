@@ -25,8 +25,8 @@ const StyledSearch = styled.div`
   }
 `;
 
-const Categories = ({setNotes, setNoteEdit}) => {
-  const [categories, setCategories] = useState([]);
+const Categories = ({categories, setCategories}) => {
+  const [filterCategories, setFilterCategories] = useState([]);
   const [isChecked, setChecked] = useState({});
   const categoryList = useRef(null);
   const categoryIcon = useRef(null);
@@ -42,21 +42,12 @@ const Categories = ({setNotes, setNoteEdit}) => {
   }
 
   function sendFilter() {
-    //filtra todas las categorias, 
-    //si luego de una seleccion ninguna queda en check se vuelven a traer todas las notas
+    //filtra todas las categorias
     let selectedValues = Object.entries(isChecked);
     selectedValues = selectedValues.filter(([key, value]) => value === true);
     selectedValues = Object.fromEntries(selectedValues);
     selectedValues = Object.keys(selectedValues);
-    if (selectedValues.length === 0) selectedValues = categories;
-    services.getFilteredCategories(selectedValues)
-    .then(res => { 
-      setNotes(res.data)
-      setNoteEdit(null)
-    })
-    .catch(err => {
-      console.log(err)
-    });
+    setCategories(selectedValues)
   }
 
   function handleChange(e) {
@@ -68,20 +59,10 @@ const Categories = ({setNotes, setNoteEdit}) => {
     categoryIcon.current.classList.toggle('rotate');
   }
 
-  function userCategories() {
-    services.getCategories()
-    .then(res => {
-      setCategories(res.data)
-      setChecked(checkboxList(res.data, false))
-    })
-    .catch(err => {
-      console.log(err)
-    });
-  }
-  
   useEffect(() => {
-    userCategories()
-  }, []);
+    setFilterCategories(categories);
+    setChecked(checkboxList(categories, false));
+  }, [filterCategories])
 
   return (
     <StyledSearch>
@@ -115,7 +96,7 @@ const StyledForm = styled(Form)`
   flex-flow: row nowrap;
 `;
 
-const SearchBy = ({setNotes, setNoteEdit}) => {
+const SearchBy = ({setSearch}) => {
   const [input, setInput] = useState("");
 
   function handleChange(e) {
@@ -125,14 +106,7 @@ const SearchBy = ({setNotes, setNoteEdit}) => {
 
   function makeSearch(e) {
     e.preventDefault();
-    services.getBySearch(input)
-    .then(res => {
-      setNotes(res.data)
-      setNoteEdit(null)
-    })
-    .catch(err => {
-      console.log(err)
-    });
+      setSearch(input)
     if (window.innerWidth <= 480) {
       document.getElementById('userNotes').classList.toggle('view-fix');
       document.getElementById('sliceMenu').classList.toggle('slice');
@@ -185,17 +159,17 @@ const FilterContainer = styled.div`
   }
 `;
 
-export default function Filter({setNotes, setNoteEdit}) {
+export default function Filter({categories, setCategories, setSearch}) {
 
   return (
     <FilterContainer>
       <SearchBy
-        setNotes={setNotes}
-        setNoteEdit={setNoteEdit}
+        setCategories={setCategories}
+        setSearch={setSearch}
       />
       <Categories 
-        setNotes={setNotes}
-        setNoteEdit={setNoteEdit}
+        categories={categories}
+        setCategories={setCategories}
       />
     </FilterContainer>
   );

@@ -27,7 +27,7 @@ const SliceMenu = styled.div`
   }
 `;
 
-export const Nav = styled.nav`
+const Nav = styled.nav`
   z-index: 2;
   background: ${props => props.theme.colors.dark};
   color: ${props => props.theme.colors.white};
@@ -56,7 +56,7 @@ const NavBarContainer = styled.div`
   }
 `;
 
-export const CompleteNav = ({setNotes, setNoteEdit, user}) => {
+export default function Navbar({user, categories, setCategories, setNoteEdit, setSearch}) {
   function openMenu() {
     document.getElementById('userNotes').classList.toggle('view-fix');
     document.getElementById('sliceMenu').classList.toggle('slice');
@@ -75,7 +75,7 @@ export const CompleteNav = ({setNotes, setNoteEdit, user}) => {
       <SliceMenu id='sliceMenu'>
         <div className='menu-wrapper'>
           <ProfileCard user={user} />
-          <Filter setNotes={setNotes} setNoteEdit={setNoteEdit} />
+          <Filter categories={categories} setCategories={setCategories} setNoteEdit={setNoteEdit} setSearch={setSearch}/>
         </div>
       </SliceMenu>
     </NavBarContainer>

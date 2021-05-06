@@ -10,7 +10,8 @@ const theme = {
     light: '#958DCE',
     dark: '#2D3B6E',
     disable: '#D9DFDC',
-    selected: '#958DCE'
+    selected: '#958DCE',
+    error: 'red'
   },
   fonts: ['Source Sans Pro']
 }

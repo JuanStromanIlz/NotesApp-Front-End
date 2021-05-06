@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { unstable_renderSubtreeIntoContainer } from 'react-dom/cjs/react-dom.development';
 import styled from 'styled-components';
 import { Button } from './Button';
 

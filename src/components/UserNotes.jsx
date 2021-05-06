@@ -4,11 +4,11 @@ import services from '../services';
 import ViewContainer from './Containers/ViewContainer';
 import ContentContainer from './Containers/ContentContainer';
 import Note from './Partials/Note';
-import EditNote from './EditNote';
+import { EditNote } from './EditNote';
 import Footer from './Partials/Footer';
 import DropDownForm from './Partials/DropDownForm';
 import { ProfileCard } from './Partials/ProfileCard';
-import { CompleteNav } from './Partials/Navbar';
+import Navbar from './Partials/Navbar';
 import Filter from './Partials/Filter';
 
 const NoMatch = (props) => {
@@ -110,19 +110,14 @@ const Actions = styled.div`
 
 export default function UserNotes() {
   const [user, setUser] = useState({});
-  const [notes, setNotes] = useState([[]]);
+  const [notes, setNotes] = useState([]);
+  const [categories, setCategories] = useState([]);
+  //Criterios de busqueda
+  const [customSearch, setSearch] = useState('');
+  const [filterCategories, setFilterCategories] = useState([]);
   const [noteEdit, setNoteEdit] = useState(null);
-
-  function getUserNotes() {
-    services.getAllNotes()
-   .then(res => {
-     setNotes(res.data);
-   })
-   .catch(err => {
-     console.log(err)
-   });
-  }
-
+  
+  //Trae los datos del usuario
   function getUser() {
     services.getUserInfo()
     .then(res => {
@@ -132,19 +127,76 @@ export default function UserNotes() {
       console.log(err)
     });
   }
+  //Trae las notas del usuario
+  function getUserNotes() {
+    services.getAllNotes()
+   .then(res => {
+     setNotes(res.data);
+   })
+   .catch(err => {
+     console.log(err)
+   });
+  }
+  //Trae las categorias del usuario
+  function getUserCategories() {
+    services.getCategories()
+    .then(res => {
+      setCategories(res.data);
+    })
+    .catch(err => {
+      console.log(err)
+    });
+  }
+  //Filtra las categorias del usuario
+  function handleCategories(values) {
+    setFilterCategories(values);
+    setNoteEdit(null);
+  }
+  //Filtra las notas por un criterio de busqueda
+  function handleSearch(value) {
+    setSearch(value);
+    setFilterCategories([]);
+    setNoteEdit(null);
+  }
+  //Parametros para realizar la busqueda 
+  function filterParams(note) {
+    return note.title.match(new RegExp(customSearch, 'i')) ||
+    note.sub.match(new RegExp(customSearch, 'i')) ||
+    note.content.match(new RegExp(customSearch, 'i')) ||
+    note.category.match(new RegExp(customSearch, 'i'))
+  }
+  //Elimina la nota seleccionada
+  function handleDelete(id) {
+    services.deleteNote(id);
+  }
+  //Selecciona la nota para editar
+  function handleEdit(id) {
+    setNoteEdit(id);
+  }
+  //Guarda los datos actualizados de una nota
+  function submitEdit(values) {
+    services.updateNote(values)
+    .then(res =>{
+      setNoteEdit(null);
+    })
+    .catch(err => {
+      console.log(err)
+    });
+  }
 
   useEffect(() => {
-    getUserNotes();
     getUser();
+    getUserNotes();
+    getUserCategories();
   }, [notes]);
 
   return (
     <ViewContainer id='userNotes'>
-      <CompleteNav setNotes={setNotes}  setNoteEdit={setNoteEdit} user={user} />
+      <Navbar user={user} categories={categories} setCategories={handleCategories} setNoteEdit={setNoteEdit} setSearch={handleSearch}  />
       <ContentContainer>
         <Actions>
           <ProfileCard user={user} />
-          <Filter setNotes={setNotes} setNoteEdit={setNoteEdit} />
+          <Filter categories={categories} setCategories={handleCategories} setNoteEdit={setNoteEdit} setSearch={handleSearch} />
         </Actions>
         <ListContainer>
           <DropDownForm />
@@ -154,15 +206,43 @@ export default function UserNotes() {
             setNotes={setNotes}
           />
           }
-          {notes.map(note => 
-            !(note._id === noteEdit) ?
-              <Note 
-                key={note._id}
-                note={note}
-                setNoteEdit={setNoteEdit}
-              /> :
-            <EditNote key={note._id} noteEdit={note} setNoteEdit={setNoteEdit}/>
-          )}
+          { //Cuando ningun filtro esta activo
+            filterCategories.length < 1 && customSearch.length === 0 ? 
+              notes.filter(note => categories.includes(note.category)).map(note =>
+              !(note._id === noteEdit) ?
+                <Note 
+                  key={note._id}
+                  note={note}
+                  handleDelete={handleDelete}
+                  handleEdit={handleEdit}
+                /> :
+                <EditNote key={note._id} noteEdit={note} submitEdit={submitEdit}/> 
+              ) :
+              //Cuando la busqueda por categorias esta activa
+              filterCategories.length >= 1 && customSearch.length === 0 ?
+                notes.filter(note => filterCategories.includes(note.category)).map(note =>
+                !(note._id === noteEdit) ?
+                  <Note 
+                    key={note._id}
+                    note={note}
+                    handleDelete={handleDelete}
+                    handleEdit={handleEdit}
+                  /> :
+                <EditNote key={note._id} noteEdit={note} submitEdit={submitEdit}/> 
+              ) : 
+              //Cuando la busqueda customizada esta activa
+              filterCategories.length === 0 && customSearch.length >= 1 &&
+                  notes.filter(filterParams).map(note =>
+                  !(note._id === noteEdit) ?
+                    <Note 
+                      key={note._id}
+                      note={note}
+                      handleDelete={handleDelete}
+                      handleEdit={handleEdit}
+                    /> :
+                  <EditNote key={note._id} noteEdit={note} submitEdit={submitEdit}/> 
+                )
+              }
         </ListContainer>
       </ContentContainer>
       <Footer />

@@ -6,17 +6,22 @@ export const Form = styled.form`
   flex-direction: column;
   margin: 0;
   gap: .8rem;
+  .form-field .error-message {
+    margin-top: .5rem;
+    padding-left: .4rem;
+    font-size: .8rem;
+  }
   input[type='text'], textarea {
     appeareance: none; 
     resize: none;
     box-sizing:border-box;
-    border: 1px solid ${props => props.theme.colors.grey};
+    border: 1px solid ${props => props.error ? 'red' : props.theme.colors.grey};
     margin: 0;
     padding: .4rem;
     border-radius: 10px;
     width: 100%;
-    position:relative;
-    z-index:0;
+    ${'' /* position: relative;
+    z-index:0; */}
     :hover, :focus {
       outline: none;
       border-color: ${props => props.theme.colors.selected};

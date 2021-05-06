@@ -1,10 +1,5 @@
-import { useState, useEffect } from 'react';
-import { format, parseISO } from 'date-fns';
-import { es } from "date-fns/locale";
 import styled from 'styled-components';
-import { Form } from './Partials/Form';
-import { Button } from './Partials/Button';
-import services from '../services';
+import { ValidationForm } from './Partials/ValidateForm';
 
 const StyledEdit = styled.div`
   grid-column: 1 / 13;
@@ -17,70 +12,11 @@ const StyledEdit = styled.div`
   }
 `;
 
-export default function EditNote({noteEdit, setNoteEdit}) {
-  const [note, setNote] = useState({});
-  const dateToShow = format(parseISO(note.updatedAt || '1998-12-04'), "eeee',' d LLL yyyy", {locale: es});
-
-  function handleChange(e) {
-    e.preventDefault();
-    let form = note;
-    form[e.target.name] = e.target.value;
-    setNote({...form});
-  }
-
-  function saveNote(e) {
-    e.preventDefault();
-    services.updateNote(note)
-    .then(res =>{
-      setNoteEdit(null);
-    })
-    .catch(err => {
-      console.log(err)
-    });
-  }
-
-  useEffect(() => {
-    setNote(noteEdit)
-  }, []);
-
-  return (
-    <StyledEdit>
-      <Form onSubmit={(e) => saveNote(e)}>
-        <span>Ultima edicion {dateToShow}</span>
-        <input 
-          type='text' 
-          name='title' 
-          placeholder='Title'
-          autoComplete='off'
-          value={note.title || ''}
-          onChange={(e) => handleChange(e)}
-        />
-        <input 
-          type='text' 
-          name='sub' 
-          placeholder='Subtitle'
-          autoComplete='off'
-          value={note.sub || ''}
-          onChange={(e) => handleChange(e)}
-        />
-        <textarea 
-          rows='10'
-          name='content' 
-          placeholder='Content'
-          autoComplete='off'
-          value={note.content || ''}
-          onChange={(e) => handleChange(e)}
-        />
-        <input 
-          type='text' 
-          name='category' 
-          placeholder='Category'
-          autoComplete='off'
-          value={note.category || ''}
-          onChange={(e) => handleChange(e)}
-        />
-        <Button withText type='submit'>Guardar</Button>
-      </Form>
-    </StyledEdit>
-  );
-}
+export const EditNote = ({noteEdit, submitEdit}) => (
+  <StyledEdit>
+    <ValidationForm 
+      note={noteEdit}
+      sendForm={submitEdit}
+    />
+  </StyledEdit>
+);
